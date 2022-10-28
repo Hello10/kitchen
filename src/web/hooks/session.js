@@ -21,3 +21,12 @@ export function useSignout ({ navigate }) {
     signout()
   }, [user])
 }
+
+export function useGetSessionToken() {
+  const supabase = useSupabaseClient()
+  return async function getSessionToken() {
+    const session = await supabase.auth.getSession()
+    return session?.data?.session?.access_token ?? null
+  }
+}
+

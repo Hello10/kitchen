@@ -6,6 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx babel src --out-dir dist",
+    "clean": "rm -rf ./node_modules; rm -rf ./dist; rm -f package-lock.json",
+    "reset": "npm run clean; npm install; npm link",
     "watch": "npx babel src --watch --out-dir dist"
   },
   "author": "",
@@ -26,13 +28,13 @@
     "@supabase/auth-helpers-nextjs": "^0.4.0",
     "@supabase/auth-helpers-react": "^0.3.0",
     "@supabase/supabase-js": "^2.0.0",
+    "encoding": "^0.1.13",
     "next": "^12.3.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "dependencies": {
     "classnames": "^2.3.2",
-    "minimist": "^1.2.7",
-    "node-fetch": "^3.2.10"
+    "minimist": "^1.2.7"
   }
 }
