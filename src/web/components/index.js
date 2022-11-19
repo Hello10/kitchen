@@ -1,4 +1,5 @@
 export * from './Button'
 export * from './GqlContext'
+export * from './GqlPage'
 export * from './SessionProvider'
 export * from './SubmitButton'

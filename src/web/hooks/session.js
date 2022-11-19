@@ -29,4 +29,3 @@ export function useGetSessionToken() {
     return session?.data?.session?.access_token ?? null
   }
 }
-

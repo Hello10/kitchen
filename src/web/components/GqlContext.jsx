@@ -6,25 +6,19 @@ import React, {
 } from 'react'
 
 async function makeGqlRequest({ query, headers = {}, variables = {}}) {
-  try {
-      const response = await global.fetch('/api/graphql', {
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json",
-        ...headers
-      },
-      body: JSON.stringify({
-        query,
-        variables
-      })
+  const response = await global.fetch('/api/graphql', {
+    method: 'POST',
+    headers: {
+      "Content-Type": "application/json",
+      ...headers
+    },
+    body: JSON.stringify({
+      query,
+      variables
     })
-    const json = await response.json()
-    return json.data
-  } catch (error) {
-    // TODO: pull out gql error code
-    console.error('Error making gql request', error)
-    throw error
-  }
+  })
+  const json = await response.json()
+  return json
 }
 
 export const GqlContext = createContext()
@@ -49,50 +43,122 @@ export function useGql({
   query,
   mutation,
   headers = {},
-  variables = {}
+  variables: baseVariables = {},
+  auto = false
 }) {
-  const [fetching, setFetching] = useState(!!query)
+  const [fetching, setFetching] = useState(false)
+  const [fetched, setFetched] = useState(false)
   const [data, setData] = useState(null)
   const [error, setError] = useState(null)
+  const [variables, setVariables] = useState({})
   const { getToken } = useGqlContext()
 
+  if (!query && !mutation) {
+    throw new Error('Must pass query or mutation')
+  }
+
   async function fetch({ variables: fetchVariables = {}} = {}) {
+    if (fetching) {
+      return {
+        error: null,
+        data: null
+      }
+    }
+
+    const token = await getToken()
+    const auth = token ? `Bearer ${token}` : null
+
+    const variables = {
+      ...baseVariables,
+      ...fetchVariables
+    }
+
+    setFetching(true)
+    setVariables(variables)
     setData(null)
     setError(null)
-    setFetching(true)
-    const token = await getToken()
-    const auth = `Bearer ${token}`
+
     try {
-      const data = await makeGqlRequest({
+      const { data, errors } = await makeGqlRequest({
         query: query || mutation,
-        variables: {
-          ...variables,
-          ...fetchVariables
-        },
+        variables,
         headers: {
-          'Authorization': auth,
+          ...(auth ? { 'Authorization': auth } : {}),
           ...headers,
         }
       })
-      setData(data)
+
       setFetching(false)
-      return data
+      setFetched(true)
+
+      if (errors?.length) {
+        const gqlError = errors[0]
+        const error = new Error(gqlError.message)
+        error.gql = gqlError
+        error.code = gqlError?.extensions.code
+        setError(error)
+        setData(null)
+
+        return {
+          error,
+          data: null
+        }
+      } else {
+        setError(null)
+        setData(data)
+
+        return {
+          error: null,
+          data
+        }
+      }
     } catch (error) {
-      setError(error)
       setFetching(false)
+      setFetched(true)
+
+      setError(error)
+      setData(null)
+
+      return {
+        error,
+        data: null
+      }
     }
   }
 
+  function refetch(args) {
+    if (fetching) {
+      return Promise.resolve()
+    }
+    setFetched(false)
+    setError(null)
+    return fetch(args)
+  }
+
   useEffect(()=> {
-    if (query) {
+    if (auto) {
       fetch()
     }
   }, [])
 
   return {
+    query,
+    mutation,
+    variables,
     fetching,
+    fetched,
     fetch,
+    refetch,
     data,
     error,
+  }
+}
+
+export function makeUseGql(opts) {
+  return (callOpts = {}) => {
+    return useGql({
+      ...opts,
+      ...callOpts
+    })
   }
 }

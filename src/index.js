@@ -3,4 +3,5 @@
 import 'next/dist/server/node-polyfill-fetch'
 
 export * from './api'
+export * from './shared'
 export * from './web'
