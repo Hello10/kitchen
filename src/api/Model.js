@@ -1,4 +1,4 @@
-import * as errors from './errors'
+import * as errors from '../shared/errors'
 
 function getErrorForPrismaError(error) {
   const {code, meta} = error
@@ -33,7 +33,7 @@ function getErrorForPrismaError(error) {
     Err = errors.GqlError
   }
 
-  return new Err(meta)
+  return new Err({ extensions: meta })
 }
 
 export class Model {

@@ -1,4 +1,4 @@
-export function getRequestAuthToken(request) {
+export function getRequestAuthToken({ request }) {
   const header = request.headers.get('Authorization')
   if (!header?.length) {
     return null
