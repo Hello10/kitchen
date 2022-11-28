@@ -11,7 +11,7 @@ export async function getSupabaseUser({ request, supabaseClient }) {
   return null
 }
 
-export function supabaseContextBuilder({ supabaseClient }) {
+export function supabaseUserContextBuilder({ supabaseClient }) {
   return async (context)=> {
     const { request } = context
     const supabaseUser = await getSupabaseUser({ request, supabaseClient })

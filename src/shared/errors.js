@@ -4,10 +4,11 @@ export const ErrorCode = {
   DataTimeout: 'DataTimeout',
   DataConstraint: 'DataConstraint',
   DataFormat: 'DataFormat',
-  DataNotFound: 'DataNotFound'
+  DataNotFound: 'DataNotFound',
+  NotAuthorized: 'NotAuthorized'
 };
 
-class GqlError extends GraphQLError {
+export class GqlError extends GraphQLError {
   constructor({ code, message = null, extensions = {} }) {
     if (!message) {
       message = code
@@ -22,6 +23,10 @@ class GqlError extends GraphQLError {
       }
     )
   }
+}
+
+export function isPublicError(error) {
+  return error instanceof GqlError;
 }
 
 export class DataTimeoutError extends GqlError {
@@ -48,6 +53,8 @@ export class DataNotFoundError extends GqlError {
   }
 }
 
-export function isPublicError(error) {
-  return error instanceof GqlError;
+export class NotAuthorizedError extends GqlError {
+  constructor(opts = {}) {
+    return super({ code: ErrorCode.NotAuthorized, ...opts })
+  }
 }
