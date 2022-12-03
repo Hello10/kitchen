@@ -1,3 +1,31 @@
+# API
+
+# Shared
+
+# Web
+
+## classes
+```
+import { classes } from '@hello10/kitchen/web'
+
+if (something) {
+  classes({
+    Funk: true,
+    Dirk: 0 === 0,
+    No: null,
+    Nope: undefined,
+    Narp: ()=> {
+      return false;
+    },
+    'Derp?!': ()=> {
+      return true;
+    }
+  });
+}
+
+Assert.equal(`${classes}`, 'Honk Donk! Funk Dirk Derp?!');
+```
+
 # SCRAPS
 
 
