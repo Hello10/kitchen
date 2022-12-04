@@ -1,3 +1,5 @@
+import { expectAll } from '../../shared/expects'
+
 import { getSubdomain, makeGetSubdomainApp } from './domains'
 
 describe('getSubdomains', () => {
@@ -44,21 +46,19 @@ describe('makeGetSubdomainApp', () => {
 
   it('gets subdomain from hostname', () => {
     const getSubdomainApp = makeGetSubdomainApp(map);
-
-    const expectations = {
-      'barf.com': MainApp,
-      'dev.barf.com': MainApp,
-      'www.barf.com': MainApp,
-      'dev.foo.barf.com': FooApp,
-      'foo.barf.com': FooApp,
-      'dev.bar.barf.com': BarApp,
-      'bar.barf.com': BarApp,
-      'derp.barf.com': MainApp,
-    }
-    for (const [host, expected] of Object.entries(expectations)) {
-      const result = getSubdomainApp(host)
-      expect(result).toBe(expected)
-    }
+    expectAll({
+      fn: getSubdomainApp,
+      toBe: {
+        'barf.com': MainApp,
+        'dev.barf.com': MainApp,
+        'www.barf.com': MainApp,
+        'dev.foo.barf.com': FooApp,
+        'foo.barf.com': FooApp,
+        'dev.bar.barf.com': BarApp,
+        'bar.barf.com': BarApp,
+        'derp.barf.com': MainApp,
+      }
+    })
   })
 
   it('should throw in no main app', () => {

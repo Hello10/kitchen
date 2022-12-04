@@ -1,3 +1,5 @@
+import { expectAll } from '../../shared/expects'
+
 import { classes as c } from './classes'
 
 describe('classes', ()=> {
@@ -87,13 +89,66 @@ describe('classes', ()=> {
       'Foo',
       false,
       'Bar',
-      ()=> {
-        return 'funkdunk'
-      },
+      ()=> 'funkdunk',
       {
-        barf: true
+        barf: true,
+        narf: false
       }
     )
     expect(`${classes}`).toBe('Foo Bar funkdunk barf')
+  })
+
+  it('should handle booleans', ()=> {
+    const classes = c(true, 'a', false, true, 10)
+    expect(`${classes}`).toBe('a 10')
+  })
+
+  it('should handle symbols', ()=> {
+    const classes = c(Symbol('a'), Symbol('bcd'))
+    expect(`${classes}`).toBe('a bcd')
+  })
+
+  it('should handle examples `classnames` npm package', ()=> {
+    expectAll({
+      fn: (val)=> val.toString(),
+      toBe: [
+        [
+          c('a', ['b', { c: true, d: false }]),
+          'a b c'
+        ],
+        [
+          c('foo', 'bar'),
+          'foo bar'
+        ],
+        [
+          c('foo', { bar: true }),
+          'foo bar'
+        ],
+        [
+          c({ 'foo-bar': true }),
+          'foo-bar'
+        ],
+        [
+          c({ 'foo-bar': false }),
+          ''
+        ],
+        [
+          c({ foo: true }, { bar: true }),
+          'foo bar'
+        ],
+        [
+          c({ foo: true, bar: true }),
+          'foo bar'
+        ],
+        [
+          c('foo', { bar: true, duck: false }, 'baz', { quux: true }),
+          'foo bar baz quux'
+        ],
+        [
+          c(null, false, 'bar', undefined, 0, 1, { baz: null }, ''),
+          'bar 1'
+        ]
+      ]
+    })
   })
 })

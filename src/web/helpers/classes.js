@@ -1,30 +1,35 @@
 export function classes (...args) {
-  let classes = []
+  let _classes = []
 
-  function add (...args) {
+  function _adder (...args) {
     if (args.length === 0) {
-      return add('')
+      return _adder(null)
     }
 
     if (args.length !== 1) {
-      return add(args)
+      return _adder(args)
     }
 
     const arg = args[0]
 
     let adds
     if (!arg) {
-      adds = []
+      return _adder
     } else if (Array.isArray(arg)) {
       adds = arg
     } else {
       adds = [arg]
     }
 
-    adds = adds.flatMap((add) => {
+    adds = adds.flat(1000).flatMap((add) => {
+      const { constructor } = add ?? {}
       if (!add) {
         return null
-      } else if (add.constructor === String) {
+      } else if (constructor === Boolean) {
+        return null
+      } else if (constructor === Symbol) {
+        return add.toString().slice(7, -1)
+      } else if ([Number, String, BigInt].includes(constructor)) {
         return add
       } else if (add.constructor === Function) {
         return add()
@@ -38,15 +43,15 @@ export function classes (...args) {
       }
     }).filter(Boolean)
 
-    classes = [...classes, ...adds]
-    return add
+    _classes = [..._classes, ...adds]
+    return _adder
   }
 
-  add.toString = function toString () {
-    return classes.join(' ')
+  _adder.toString = function toString () {
+    return _classes.join(' ')
   }
 
-  return add(...args)
+  return _adder(...args)
 }
 
 export default classes
