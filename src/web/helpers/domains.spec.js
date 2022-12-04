@@ -1,24 +1,26 @@
-import { expectAll } from '../../shared/expects'
+
+import assert from 'assert'
+import { assertAll } from '../../util/asserts'
 
 import { getSubdomain, makeGetSubdomainApp } from './domains'
 
 describe('getSubdomains', () => {
   it('gets subdomain from hostname', () => {
     const result = getSubdomain('foo.bar.baz.com')
-    expect(result).toBe('foo.bar')
+    assert(result === 'foo.bar')
   })
 
   it('handles localhost', () => {
     const result = getSubdomain('foo.localhost')
-    expect(result).toBe('foo')
+    assert(result === 'foo')
   })
 
   it('returns empty string when no subdomain', () => {
     let result = getSubdomain('foo.com')
-    expect(result).toBe('')
+    assert(result === '')
 
     result = getSubdomain('com')
-    expect(result).toBe('')
+    assert(result === '')
   })
 })
 
@@ -29,16 +31,16 @@ describe('makeGetSubdomainApp', () => {
 
   const map = [
     {
-      subdomains: ['dev', 'www'],
+      subdomains: ['wow', 'www'],
       app: MainApp,
       main: true
     },
     {
-      subdomains: ['dev.foo', 'foo'],
+      subdomains: ['wow.foo', 'foo'],
       app: FooApp
     },
     {
-      subdomains: ['dev.bar', 'bar'],
+      subdomains: ['wow.bar', 'bar'],
       app: BarApp
     }
   ]
@@ -46,15 +48,15 @@ describe('makeGetSubdomainApp', () => {
 
   it('gets subdomain from hostname', () => {
     const getSubdomainApp = makeGetSubdomainApp(map);
-    expectAll({
+    assertAll({
       fn: getSubdomainApp,
-      toBe: {
+      equals: {
         'barf.com': MainApp,
-        'dev.barf.com': MainApp,
+        'wow.barf.com': MainApp,
         'www.barf.com': MainApp,
-        'dev.foo.barf.com': FooApp,
+        'wow.foo.barf.com': FooApp,
         'foo.barf.com': FooApp,
-        'dev.bar.barf.com': BarApp,
+        'wow.bar.barf.com': BarApp,
         'bar.barf.com': BarApp,
         'derp.barf.com': MainApp,
       }
@@ -62,8 +64,8 @@ describe('makeGetSubdomainApp', () => {
   })
 
   it('should throw in no main app', () => {
-    expect(()=> {
+    assert.throws(()=> {
       makeGetSubdomainApp(map.filter((item) => !item.main))
-    }).toThrow('Must set')
+    }, 'Must set')
   })
 })

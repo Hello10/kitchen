@@ -1,11 +1,13 @@
-import { expectAll } from '../../shared/expects'
+import assert from 'assert'
+
+import { assertAll } from '../../util/asserts'
 
 import { classes as c } from './classes'
 
 describe('classes', ()=> {
   it('should work for the simple case of one class string', ()=> {
     const classes = c('Honk')
-    expect(`${classes}`).toBe('Honk')
+    assert(classes.toString() === 'Honk')
   })
 
   it('should work for conditionally adding class', ()=> {
@@ -13,7 +15,7 @@ describe('classes', ()=> {
     if (1 + 1 === 2) {
       classes('Donk')
     }
-    expect(`${classes}`).toBe('Honk Donk')
+    assert(classes.toString() === 'Honk Donk')
   })
 
   it('should work for passing object', ()=> {
@@ -29,21 +31,21 @@ describe('classes', ()=> {
         return true
       }
     })
-    expect(`${classes}`).toBe('Honk Donk! Funk Dirk Derp?!')
+    assert(classes.toString() === 'Honk Donk! Funk Dirk Derp?!')
   })
 
   it('should return empty string when object with no true values', ()=> {
     const classes = c({
       wow: false
     })
-    expect(classes.toString()).toBe('')
+    assert(classes.toString() === '')
   })
 
   it('should handle no initial arg', ()=> {
     const classes = c()
-    expect(classes.toString()).toBe('')
+    assert(classes.toString() === '')
     classes('Ok')
-    expect(classes.toString()).toBe('Ok')
+    assert(classes.toString() === 'Ok')
   })
 
   it('should work for passing an array', ()=> {
@@ -54,7 +56,7 @@ describe('classes', ()=> {
       Wonk: false
     })
     classes(['Woah', 'Hmm'])
-    expect(`${classes}`).toBe('Ok Wow Something Donk Woah Hmm')
+    assert(classes.toString() === 'Ok Wow Something Donk Woah Hmm')
   })
 
   it('should handle just an object', ()=> {
@@ -63,7 +65,7 @@ describe('classes', ()=> {
       Nope: false,
       Uhuh: 1 > 0
     })
-    expect(`${classes}`).toBe('Yep Uhuh')
+    assert(classes.toString() === 'Yep Uhuh')
   })
 
   it('should filter falsy values from array', ()=> {
@@ -72,7 +74,7 @@ describe('classes', ()=> {
       false,
       'Bar'
     ])
-    expect(`${classes}`).toBe('Foo Bar')
+    assert(classes.toString() === 'Foo Bar')
   })
 
   it('should filter falsy values from array', ()=> {
@@ -81,7 +83,7 @@ describe('classes', ()=> {
       false,
       'Bar'
     ])
-    expect(`${classes}`).toBe('Foo Bar')
+    assert(classes.toString() === 'Foo Bar')
   })
 
   it('should allow passing array directly as multiple arguments', ()=> {
@@ -95,23 +97,23 @@ describe('classes', ()=> {
         narf: false
       }
     )
-    expect(`${classes}`).toBe('Foo Bar funkdunk barf')
+    assert(classes.toString() === 'Foo Bar funkdunk barf')
   })
 
   it('should handle booleans', ()=> {
     const classes = c(true, 'a', false, true, 10)
-    expect(`${classes}`).toBe('a 10')
+    assert(classes.toString() === 'a 10')
   })
 
   it('should handle symbols', ()=> {
     const classes = c(Symbol('a'), Symbol('bcd'))
-    expect(`${classes}`).toBe('a bcd')
+    assert(classes.toString() === 'a bcd')
   })
 
   it('should handle examples `classnames` npm package', ()=> {
-    expectAll({
+    assertAll({
       fn: (val)=> val.toString(),
-      toBe: [
+      equals: [
         [
           c('a', ['b', { c: true, d: false }]),
           'a b c'
