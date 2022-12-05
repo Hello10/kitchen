@@ -10,8 +10,14 @@ describe('type', ()=> {
     }
   }
 
-  it('should determine correct constructor and string types', ()=> {
+  function Person2 (name) {
+    this.name = name;
+  }
+  Person2.prototype.barf = function () {
+    return this.name + " just barfed!";
+  };
 
+  it('should determine correct constructor and string types', ()=> {
     const expectations = [
       [
         ["hi", "there", "1234"],
@@ -60,6 +66,10 @@ describe('type', ()=> {
       [
         [new Person('ralph'), new Person('joe')],
         [Person, "Person"]
+      ],
+      [
+        [new Person2('ralph'), new Person2('joe')],
+        [Person2, "Person2"]
       ]
     ]
 
@@ -70,7 +80,7 @@ describe('type', ()=> {
         assert(ctype === constructor)
 
         const stype = type.string(input)
-        assert(stype === string)
+        assert(stype === string, `${stype} != ${string}`)
       }
     }
   })
@@ -84,6 +94,9 @@ describe('type', ()=> {
     it('should return false for non built in objects', ()=> {
       const derp = new Person('derp')
       assert(!type.isBuiltIn(derp))
+
+      const dorp = new Person2('dorp')
+      assert(!type.isBuiltIn(dorp))
     })
   })
 

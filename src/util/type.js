@@ -32,8 +32,7 @@ function string (obj) {
   }
 
   const ctype = type(obj)
-  const useName = ctype && isBuiltIn(ctype)
-
+  const useName = (ctype && !isBuiltIn(obj))
   return useName ? ctype.name : stype
 }
 
