@@ -1,7 +1,7 @@
 import * as errors from '../shared/errors'
 
 function getErrorForPrismaError(error) {
-  const {code, meta} = error
+  const { code, meta } = error
 
   const errorsByCode = {
     P1002: errors.DataTimeoutError,
@@ -68,12 +68,12 @@ const prismaMethods = [
 ]
 
 for (const method of prismaMethods) {
-  Model.prototype[method] = async function (args) {
+  Model.prototype[method] = async function(args) {
     const { table } = this
     try {
       return await table[method](args)
     } catch (error) {
-      const {code, meta } = error
+      const { code, meta } = error
       if (code && meta) {
         throw getErrorForPrismaError(error)
       }

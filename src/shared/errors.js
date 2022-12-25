@@ -1,6 +1,7 @@
 import { GraphQLError } from 'graphql'
 
 export const ErrorCode = {
+  GqlError: 'GqlError',
   DataTimeout: 'DataTimeout',
   DataConstraint: 'DataConstraint',
   DataFormat: 'DataFormat',
@@ -9,7 +10,7 @@ export const ErrorCode = {
 };
 
 export class GqlError extends GraphQLError {
-  constructor({ code, message = null, extensions = {} }) {
+  constructor({ code = ErrorCode.GqlError, message = null, extensions = {} } = {}) {
     if (!message) {
       message = code
     }

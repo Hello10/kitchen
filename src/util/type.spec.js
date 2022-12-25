@@ -1,7 +1,6 @@
 import assert from 'assert'
 
-import type from './type'
-import { assertAll } from './asserts'
+import type, { isFunction } from './type'
 
 describe('type', ()=> {
   class Person {
@@ -116,6 +115,36 @@ describe('type', ()=> {
       assert(isDorp(true))
       assert(!isDorp(123))
     })
-
   })
+
+  describe('isFunction', ()=> {
+    it('should test true for functions', ()=> {
+      const passes = [
+        function derp1 () { return 'derp'; },
+        ()=> {},
+        async function derp2 () { return 'derp2'; },
+        async ()=> {}
+      ]
+      for (const pass of passes) {
+        const isFn = isFunction(pass)
+        assert.equal(isFn, true, pass)
+      }
+    });
+
+    it('should test false for non functions', ()=> {
+      const fails = [
+        false,
+        null,
+        undefined,
+        10,
+        new (class Derp {})(),
+        'what'
+      ]
+
+      for (const fail of fails) {
+        const isFn = isFunction(fail)
+        assert.equal(isFn, false, fail)
+      }
+    });
+  });
 })

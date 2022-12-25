@@ -6,7 +6,7 @@ export function type (obj) {
   }
 }
 
-function isBuiltIn (obj) {
+export function isBuiltIn (obj) {
   const builtIns = [
     Object,
     Function,
@@ -18,10 +18,10 @@ function isBuiltIn (obj) {
     RegExp,
     Error
   ];
-  return is(builtIns)(obj)
+  return typeIs(builtIns)(obj)
 }
 
-function string (obj) {
+function typeString (obj) {
   const _toString = ({}).toString
 
   // [object Blah] -> Blah
@@ -36,11 +36,11 @@ function string (obj) {
   return useName ? ctype.name : stype
 }
 
-function is (...types) {
+function typeIs (...types) {
   return function any(obj) {
     return types.flat(100).some((t)=> {
       if (type(t) === String) {
-        return string(obj) === t
+        return typeString(obj) === t
       } else {
         return type(obj) === t
       }
@@ -48,8 +48,28 @@ function is (...types) {
   }
 }
 
-type.is = is
-type.string = string
+type.is = typeIs
+type.string = typeString
 type.isBuiltIn = isBuiltIn
+
+export const isObject = typeIs(Object)
+export const isFunction = typeIs(['Function', 'AsyncFunction'])
+export const isArray = typeIs(Array)
+export const isString = typeIs(String)
+export const isBoolean = typeIs(Boolean)
+export const isNumber = typeIs(Number)
+export const isDate = typeIs(Date)
+export const isRegExp = typeIs(RegExp)
+export const isError = typeIs(Error)
+
+type.isObject = isObject
+type.isFunction = isFunction
+type.isArray = isArray
+type.isString = isString
+type.isBoolean = isBoolean
+type.isNumber = isNumber
+type.isDate = isDate
+type.isRegExp = isRegExp
+type.isError = isError
 
 export default type

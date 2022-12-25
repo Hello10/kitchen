@@ -1,4 +1,4 @@
-export async function mapp (iterable, map, options = {}) {
+export async function pmap (iterable, map, options = {}) {
   let concurrency = options.concurrency || Infinity;
   let index = 0;
   const results = [];
@@ -33,4 +33,4 @@ export async function mapp (iterable, map, options = {}) {
   return Promise.all(runs).then(()=> results);
 }
 
-export default mapp
+export default pmap

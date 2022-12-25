@@ -3,13 +3,14 @@ import assert from 'assert'
 import { omitter } from './objects'
 
 import {
-  capitalize,
-  words,
   camelCase,
-  snakeCase,
-  pascalCase,
+  capitalize,
   constantCase,
-  splitter
+  pascalCase,
+  pluralize,
+  snakeCase,
+  splitter,
+  words,
 } from './strings'
 
 describe('capitalize', ()=> {
@@ -71,5 +72,34 @@ describe('splitter', ()=> {
     let output = splitOnVowelsAndPunctuation('hi how are you? i am just great thanks')
     const joined = output.join('')
     assert.equal(joined, 'h hw r y  m jst grt thnks')
+  })
+})
+
+describe('pluralize', ()=> {
+  it('should pluralize words', ()=> {
+    const things = pluralize({ word: 'thing' })
+    assert.equal(things, 'things')
+  })
+
+  it('should pluralize with count', ()=> {
+    const skies = pluralize({
+      word: 'sky',
+      plural: 'skies',
+      count: 2
+    })
+    assert.equal(skies, '2 skies')
+
+    const fart = pluralize({
+      word: 'fart',
+      plural: 'farts',
+      count: 1
+    })
+    assert.equal(fart, 'a fart')
+  })
+
+  it('should throw if word not passed', ()=> {
+    assert.throws(()=> {
+      pluralize({ plural: 2 })
+    }, /missing/)
   })
 })

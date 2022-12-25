@@ -1,7 +1,5 @@
 import assert from 'assert'
 
-import { assertAll } from '../../util/asserts'
-
 import { classes as c } from './classes'
 
 describe('classes', ()=> {
@@ -111,46 +109,47 @@ describe('classes', ()=> {
   })
 
   it('should handle examples `classnames` npm package', ()=> {
-    assertAll({
-      fn: (val)=> val.toString(),
-      equals: [
-        [
-          c('a', ['b', { c: true, d: false }]),
-          'a b c'
-        ],
-        [
-          c('foo', 'bar'),
-          'foo bar'
-        ],
-        [
-          c('foo', { bar: true }),
-          'foo bar'
-        ],
-        [
-          c({ 'foo-bar': true }),
-          'foo-bar'
-        ],
-        [
-          c({ 'foo-bar': false }),
-          ''
-        ],
-        [
-          c({ foo: true }, { bar: true }),
-          'foo bar'
-        ],
-        [
-          c({ foo: true, bar: true }),
-          'foo bar'
-        ],
-        [
-          c('foo', { bar: true, duck: false }, 'baz', { quux: true }),
-          'foo bar baz quux'
-        ],
-        [
-          c(null, false, 'bar', undefined, 0, 1, { baz: null }, ''),
-          'bar 1'
-        ]
+    const expectations = [
+      [
+        ['a', ['b', { c: true, d: false }]],
+        'a b c'
+      ],
+      [
+        ['foo', 'bar'],
+        'foo bar'
+      ],
+      [
+        ['foo', { bar: true }],
+        'foo bar'
+      ],
+      [
+        [{ 'foo-bar': true }],
+        'foo-bar'
+      ],
+      [
+        [{ 'foo-bar': false }],
+        ''
+      ],
+      [
+        [{ foo: true }, { bar: true }],
+        'foo bar'
+      ],
+      [
+        [{ foo: true, bar: true }],
+        'foo bar'
+      ],
+      [
+        ['foo', { bar: true, duck: false }, 'baz', { quux: true }],
+        'foo bar baz quux'
+      ],
+      [
+        [null, false, 'bar', undefined, 0, 1, { baz: null }, ''],
+        'bar 1'
       ]
-    })
+    ]
+    for (const [input, expectation] of expectations) {
+      const output = c(input).toString()
+      assert.equal(output, expectation)
+    }
   })
 })

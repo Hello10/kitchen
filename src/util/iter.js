@@ -1,15 +1,13 @@
 /// iterable that returns array or function
 
-export function upto (n) {
+export function times (n) {
   let i = 0;
   const results = [];
   return function f (fn) {
-    while (i <= n) {
+    while (i < n) {
       results.push(fn(i));
       i++;
     }
     return results;
   };
 }
-
-export default upto

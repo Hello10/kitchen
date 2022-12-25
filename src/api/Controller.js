@@ -1,13 +1,14 @@
 import { isFunction } from 'lodash';
 
 import {
-  GraphQLError,
-  NotAuthorizedError
+  GqlError,
+  NotAuthorizedError,
+  isPublicError
 } from '../shared/errors';
 
 const UNION_RESOLVER_NAME = '__resolveType';
 
-export class Resolver {
+export class Controller {
   constructor({ logger, models }) {
     this.models = models
     this.logger = logger
@@ -121,12 +122,12 @@ export class Resolver {
             rlogger.info('Resolver result', {result});
             return result;
           } catch (error) {
-            if (error.expected) {
+            if (isPublicError(error)) {
               rlogger.error('Expected GraphQL error', error);
               throw error;
             } else {
               rlogger.error(error);
-              throw new GraphQLError();
+              throw new GqlError();
             }
           }
         };
@@ -135,9 +136,31 @@ export class Resolver {
     return result;
   }
 
+
+  resolveType(getType) {
+    return (request) => {
+      const type = getType(request)
+      return request.info.schema.getType(type)
+    }
+  }
+
+  addSessionUserId(key) {
+    return ({ data, context }) => {
+      return {
+        ...data,
+        [key]: context.user.id
+      }
+    }
+  }
+
+  pass({ obj, info }) {
+    const attr = info.fieldName
+    return obj[attr]
+  }
+
   stub () {
     throw new Error('Stub');
   }
 }
 
-export default Resolver
+export default Controller

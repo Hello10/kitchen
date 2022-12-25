@@ -13,6 +13,6 @@ describe('sleep', ()=> {
     const time = 25;
     await sleep(time);
     const delta = ms() - start;
-    assert((delta > time) && (delta < (time * 4)));
+    assert((delta > time) && (delta < (time * 10)));
   });
 });

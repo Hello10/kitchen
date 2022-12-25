@@ -13,42 +13,42 @@ export function indexer (arg) {
   if (arg.constructor === String) {
     arg = {
       attr: arg
-    };
+    }
   }
 
   const {
     attr,
     type = types.array
-  } = arg;
+  } = arg
 
   if (!(type in types)) {
-    throw new Error('Invalid index type');
+    throw new Error('Invalid index type')
   }
 
   return function index (items) {
-    const index = {};
+    const index = {}
     for (const item of items) {
-      const value = item[attr];
-      const has_value = (value in index);
+      const value = item[attr]
+      const hasValue = (value in index)
       if (type === types.array) {
-        if (!has_value) {
-          index[value] = [];
+        if (!hasValue) {
+          index[value] = []
         }
-        index[value].push(item);
+        index[value].push(item)
       } else if (type === types.first) {
-        if (!has_value) {
-          index[value] = item;
+        if (!hasValue) {
+          index[value] = item
         }
       } else {
-        index[value] = item;
+        index[value] = item
       }
     }
-    return index;
+    return index
   };
 }
 
 for (const [k, v] of Object.entries(types)) {
-  indexer[k] = v;
+  indexer[k] = v
 }
 
-export default indexer
+export const indexById = indexer();

@@ -1,9 +1,9 @@
 import assert from 'assert'
 
-import mapp from './mapp'
+import { pmap } from './promises'
 import sleep from './sleep'
 
-describe('mapp', ()=> {
+describe('pmap', ()=> {
   const nums = [1, 2, 3, 4, 5, 6, 7];
 
   it('should asynchronously map', async ()=> {
@@ -11,7 +11,7 @@ describe('mapp', ()=> {
       await sleep(num);
       return num * num;
     }
-    const squares = await mapp(nums, sleepySquare);
+    const squares = await pmap(nums, sleepySquare);
     assert.deepEqual(squares, [1, 4, 9, 16, 25, 36, 49]);
   });
 
@@ -27,7 +27,7 @@ describe('mapp', ()=> {
     }
 
     try {
-      await mapp(nums, grumpySquare);
+      await pmap(nums, grumpySquare);
       assert.fail();
     } catch (error) {
       assert.equal(error, gromp);

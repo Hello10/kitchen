@@ -1,6 +1,5 @@
 
 import assert from 'assert'
-import { assertAll } from '../../util/asserts'
 
 import { getSubdomain, makeGetSubdomainApp } from './domains'
 
@@ -48,19 +47,19 @@ describe('makeGetSubdomainApp', () => {
 
   it('gets subdomain from hostname', () => {
     const getSubdomainApp = makeGetSubdomainApp(map);
-    assertAll({
-      fn: getSubdomainApp,
-      equals: {
-        'barf.com': MainApp,
-        'wow.barf.com': MainApp,
-        'www.barf.com': MainApp,
-        'wow.foo.barf.com': FooApp,
-        'foo.barf.com': FooApp,
-        'wow.bar.barf.com': BarApp,
-        'bar.barf.com': BarApp,
-        'derp.barf.com': MainApp,
-      }
-    })
+    for (const [input, expects] of Object.entries({
+      'barf.com': MainApp,
+      'wow.barf.com': MainApp,
+      'www.barf.com': MainApp,
+      'wow.foo.barf.com': FooApp,
+      'foo.barf.com': FooApp,
+      'wow.bar.barf.com': BarApp,
+      'bar.barf.com': BarApp,
+      'derp.barf.com': MainApp
+    })) {
+      const output = getSubdomainApp(input)
+      assert.equal(output, expects)
+    }
   })
 
   it('should throw in no main app', () => {
