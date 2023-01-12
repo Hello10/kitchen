@@ -1,7 +1,8 @@
 // Without this, get error on global.Request not being defined, so
 // using this import to force next to polyfill them
-import 'next/dist/server/node-polyfill-fetch'
+// import 'next/dist/server/node-polyfill-fetch'
 
+export * from './createYogaGqlServer'
 export * from './createGqlServer'
 export * from './exposeResolvers'
 export * from './getRequestAuthToken'

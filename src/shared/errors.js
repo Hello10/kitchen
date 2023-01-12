@@ -1,5 +1,3 @@
-import { GraphQLError } from 'graphql'
-
 export const ErrorCode = {
   GqlError: 'GqlError',
   DataTimeout: 'DataTimeout',
@@ -9,7 +7,7 @@ export const ErrorCode = {
   NotAuthorized: 'NotAuthorized'
 };
 
-export class GqlError extends GraphQLError {
+export class GqlError extends Error {
   constructor({ code = ErrorCode.GqlError, message = null, extensions = {} } = {}) {
     if (!message) {
       message = code

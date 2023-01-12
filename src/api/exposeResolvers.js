@@ -1,21 +1,25 @@
-import {merge} from 'lodash'
-// import { parse } from 'graphql'
+import { merge } from 'lodash'
+import { makeExecutableSchema } from '@graphql-tools/schema'
 
-export function exposeResolvers ({controllers, logger, options}) {
+export function exposeResolvers ({controllers, logger, models, ...options}) {
   const resolvers = {}
   const resolverTypeDefs = []
+
   for (const [name, Controller] of Object.entries(controllers)) {
     logger.debug(`Exposing controller ${name}`)
-    const controller = new Controller(options)
+    const controller = new Controller({logger, models, ...options})
     merge(resolvers, controller.expose())
     resolverTypeDefs.push(controller.typeDefs())
   }
 
   const typeDefs = resolverTypeDefs.join('\n')
 
+  const schema =  makeExecutableSchema({ typeDefs, resolvers })
+
   return {
     resolvers,
-    typeDefs
+    typeDefs,
+    schema,
   }
 }
 
