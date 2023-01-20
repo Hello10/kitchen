@@ -1,9 +1,9 @@
-import React, {
+import {
   createContext,
   useContext,
-  useState,
-  useEffect
-} from 'react'
+  createSignal,
+  createEffect
+} from 'solid-js'
 
 async function makeGqlRequest({ query, headers = {}, variables = {}}) {
   const response = await global.fetch('/api/graphql', {
@@ -46,11 +46,11 @@ export function useGql({
   variables: baseVariables = {},
   auto = false
 }) {
-  const [fetching, setFetching] = useState(false)
-  const [fetched, setFetched] = useState(false)
-  const [data, setData] = useState(null)
-  const [error, setError] = useState(null)
-  const [variables, setVariables] = useState({})
+  const [fetching, setFetching] = createSignal(false)
+  const [fetched, setFetched] = createSignal(false)
+  const [data, setData] = createSignal(null)
+  const [error, setError] = createSignal(null)
+  const [variables, setVariables] = createSignal({})
   const { getToken } = useGqlContext()
 
   if (!query && !mutation) {
@@ -58,7 +58,7 @@ export function useGql({
   }
 
   async function fetch({ variables: fetchVariables = {}} = {}) {
-    if (fetching) {
+    if (fetching()) {
       return {
         error: null,
         data: null
@@ -127,7 +127,7 @@ export function useGql({
   }
 
   function refetch(args) {
-    if (fetching) {
+    if (fetching()) {
       return Promise.resolve()
     }
     setFetched(false)
@@ -135,7 +135,7 @@ export function useGql({
     return fetch(args)
   }
 
-  useEffect(()=> {
+  createEffect(()=> {
     if (auto) {
       fetch()
     }
